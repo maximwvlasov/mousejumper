@@ -1,21 +1,37 @@
 // Получаем элементы игры
 const mouse = document.getElementById('mouse');
 const gameContainer = document.getElementById('game-container');
+const scoreElement = document.getElementById('score'); // Элемент для счёта
 
-// Начальная позиция мыши
-let mousePosition = { x: 150, y: 200 }; // Мышь начинается посередине по горизонтали, чуть ниже верха
-let velocityY = 0; // Скорость падения/прыжка по вертикали
-let isJumping = false; // Флаг, показывающий, прыгает ли мышь
-const gravity = 0.5; // Гравитация — сила, которая тянет мышь вниз
-const jumpStrength = -10; // Сила прыжка (отрицательная, чтобы прыгать вверх)
+// Начальная позиция мыши и счёт
+let mousePosition = { x: window.innerWidth / 2 - 25, y: window.innerHeight / 2 }; // Центр экрана
+let velocityY = 0;
+let isJumping = false;
+let score = 0; // Начальное количество монет
+const gravity = 0.5;
+const jumpStrength = -10;
+
+// Обновляем счёт на экране
+function updateScore() {
+    scoreElement.textContent = `Монеты: ${score}`;
+}
 
 // Функция для создания платформ
 function createPlatform() {
     const platform = document.createElement('div');
     platform.className = 'platform';
-    platform.style.left = Math.random() * (gameContainer.offsetWidth - 80) + 'px'; // Случайная позиция по горизонтали
-    platform.style.top = Math.random() * gameContainer.offsetHeight + 'px'; // Случайная позиция по вертикали
+    platform.style.left = Math.random() * (gameContainer.offsetWidth - 80) + 'px';
+    platform.style.top = Math.random() * gameContainer.offsetHeight + 'px';
     gameContainer.appendChild(platform);
+
+    // Случайно добавляем бутылку на 20% платформ
+    if (Math.random() < 0.2) { // 20% шанс появления бутылки
+        const bottle = document.createElement('div');
+        bottle.className = 'bottle';
+        bottle.style.left = platform.style.left;
+        bottle.style.top = (parseFloat(platform.style.top) - 40) + 'px'; // Над платформой
+        gameContainer.appendChild(bottle);
+    }
 }
 
 // Создаём несколько платформ при старте
@@ -37,29 +53,32 @@ for (let i = 0; i < 3; i++) {
     createCoin();
 }
 
-// Обработка прыжка (например, по нажатию пробела или клику)
-document.addEventListener('keydown', (e) => {
-    if (e.code === 'Space' && !isJumping) { // Прыжок по пробелу
-        velocityY = jumpStrength;
-        isJumping = true;
-    }
-});
-
-// Обработка клика для мобильных устройств или мыши
-gameContainer.addEventListener('click', () => {
+// Обработка прыжка (для смартфонов и десктопов)
+gameContainer.addEventListener('click', () => { // Клик для смартфонов
     if (!isJumping) {
         velocityY = jumpStrength;
         isJumping = true;
+        score += 10; // +10 монет за прыжок
+        updateScore();
     }
 });
 
-// Основной игровой цикл (обновляет положение мыши и платформ)
+document.addEventListener('keydown', (e) => { // Пробел для десктопов
+    if (e.code === 'Space' && !isJumping) {
+        velocityY = jumpStrength;
+        isJumping = true;
+        score += 10; // +10 монет за прыжок
+        updateScore();
+    }
+});
+
+// Основной игровой цикл
 function gameLoop() {
     // Применяем гравитацию
     velocityY += gravity;
     mousePosition.y += velocityY;
 
-    // Ограничиваем мышь снизу, чтобы она не падала за пределы экрана
+    // Ограничиваем мышь снизу
     if (mousePosition.y > gameContainer.offsetHeight - 50) {
         mousePosition.y = gameContainer.offsetHeight - 50;
         velocityY = 0;
@@ -76,17 +95,16 @@ function gameLoop() {
         const platformRect = platform.getBoundingClientRect();
         const mouseRect = mouse.getBoundingClientRect();
 
-        // Если мышь приземляется на платформу
         if (
             mouseRect.bottom > platformRect.top &&
             mouseRect.top < platformRect.bottom &&
             mouseRect.right > platformRect.left &&
             mouseRect.left < platformRect.right &&
-            velocityY > 0 // Мышь идёт вниз
+            velocityY > 0
         ) {
-            mousePosition.y = platformRect.top - 50; // Ставим мышь на платформу
-            velocityY = 0; // Останавливаем падение
-            isJumping = false; // Можно прыгать снова
+            mousePosition.y = platformRect.top - 50;
+            velocityY = 0;
+            isJumping = false;
         }
     });
 
@@ -102,39 +120,53 @@ function gameLoop() {
             mouseRect.right > coinRect.left &&
             mouseRect.left < coinRect.right
         ) {
-            coin.remove(); // Убираем монету, если мышь её собрала
-            createCoin(); // Создаём новую монету в случайном месте
+            coin.remove();
+            score += 10; // +10 монет за монету
+            updateScore();
+            createCoin(); // Создаём новую монету
         }
     });
 
-    // Двигаем платформы вверх (создаём эффект подъёма мыши)
-    platforms.forEach(platform => {
-        let platformY = parseFloat(platform.style.top || 0);
-        platformY -= 2; // Скорость движения платформ вверх
-        platform.style.top = platformY + 'px';
+    // Проверяем столкновения с бутылками
+    const bottles = document.querySelectorAll('.bottle');
+    bottles.forEach(bottle => {
+        const bottleRect = bottle.getBoundingClientRect();
+        const mouseRect = mouse.getBoundingClientRect();
 
-        // Если платформа уходит за верхний край, создаём её заново внизу
-        if (platformY < -20) {
-            platformY = gameContainer.offsetHeight + Math.random() * 200;
-            platform.style.left = Math.random() * (gameContainer.offsetWidth - 80) + 'px';
+        if (
+            mouseRect.bottom > bottleRect.top &&
+            mouseRect.top < bottleRect.bottom &&
+            mouseRect.right > bottleRect.left &&
+            mouseRect.left < bottleRect.right
+        ) {
+            bottle.remove();
+            score += 100; // +100 монет за бутылку
+            updateScore();
         }
-        platform.style.top = platformY + 'px';
     });
 
-    // Двигаем монеты вверх (аналогично платформам)
-    coins.forEach(coin => {
-        let coinY = parseFloat(coin.style.top || 0);
-        coinY -= 2;
-        coin.style.top = coinY + 'px';
+    // Двигаем платформы, монеты и бутылки вверх
+    [platforms, coins, bottles].forEach(elements => {
+        elements.forEach(element => {
+            let elementY = parseFloat(element.style.top || 0);
+            elementY -= 2; // Скорость движения вверх
+            element.style.top = elementY + 'px';
 
-        if (coinY < -20) {
-            coinY = gameContainer.offsetHeight + Math.random() * 200;
-            coin.style.left = Math.random() * (gameContainer.offsetWidth - 20) + 'px';
-        }
-        coin.style.top = coinY + 'px';
+            if (elementY < -50) { // Если элемент ушёл за верхний край
+                elementY = gameContainer.offsetHeight + Math.random() * 200;
+                element.style.left = Math.random() * (gameContainer.offsetWidth - (element.className === 'platform' ? 80 : 20)) + 'px';
+                if (element.className === 'platform' && Math.random() < 0.2) { // 20% шанс на бутылку
+                    const newBottle = document.createElement('div');
+                    newBottle.className = 'bottle';
+                    newBottle.style.left = element.style.left;
+                    newBottle.style.top = (elementY - 40) + 'px';
+                    gameContainer.appendChild(newBottle);
+                }
+            }
+            element.style.top = elementY + 'px';
+        });
     });
 
-    // Повторяем игровой цикл
     requestAnimationFrame(gameLoop);
 }
 
