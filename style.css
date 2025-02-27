@@ -1,13 +1,13 @@
 /* Основной контейнер игры */
 #game-container {
     position: relative;
-    width: 100vw; /* Полная ширина экрана для смартфонов */
-    height: 100vh; /* Полная высота экрана для смартфонов */
-    max-width: 320px; /* Ограничение ширины для десктопов */
-    max-height: 480px; /* Ограничение высоты для десктопов */
-    margin: 0 auto; /* Центрирование */
-    background-color: #f0f0f0; /* Светлый фон */
-    overflow: hidden; /* Скрываем элементы за пределами */
+    width: 100vw;
+    height: 100vh;
+    max-width: 320px;
+    max-height: 480px;
+    margin: 0 auto;
+    background-color: #f0f0f0;
+    overflow: hidden;
 }
 
 /* Счётчик монет */
@@ -18,7 +18,7 @@
     font-size: 20px;
     font-family: Arial, sans-serif;
     color: black;
-    z-index: 10; /* Чтобы счёт был поверх всего */
+    z-index: 10;
 }
 
 /* Персонаж — зелёная мышь */
@@ -26,8 +26,10 @@
     position: absolute;
     width: 50px;
     height: 50px;
-    background: url('mouse.png'); /* Твоя картинка мыши */
+    background: url('mouse.png'); /* Картинка мыши */
     background-size: contain;
+    /* Запасной вариант: зелёный прямоугольник, если картинка не найдена */
+    background-color: #00ff00;
 }
 
 /* Платформы */
@@ -35,8 +37,8 @@
     position: absolute;
     width: 80px;
     height: 20px;
-    background-color: #8B4513; /* Коричневый цвет платформ */
-    border: 2px solid black; /* Жирные линии в стиле Paint */
+    background-color: #8B4513;
+    border: 2px solid black;
 }
 
 /* Монеты */
@@ -49,11 +51,11 @@
     border: 2px solid black;
 }
 
-/* Бутылки (новый элемент) */
+/* Бутылки */
 .bottle {
     position: absolute;
     width: 20px;
     height: 40px;
-    background-color: #8B0000; /* Коричневый цвет бутылки */
+    background-color: #8B0000;
     border: 2px solid black;
 }
