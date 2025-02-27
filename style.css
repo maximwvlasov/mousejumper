@@ -1,30 +1,42 @@
 /* Основной контейнер игры */
 #game-container {
     position: relative;
-    width: 320px; /* Ширина экрана игры */
-    height: 480px; /* Высота экрана игры */
-    background-color: #f0f0f0; /* Светлый фон, как в простом рисунке */
-    overflow: hidden; /* Скрываем элементы, выходящие за пределы */
-    margin: 0 auto; /* Центрируем игру на странице */
+    width: 100vw; /* Полная ширина экрана для смартфонов */
+    height: 100vh; /* Полная высота экрана для смартфонов */
+    max-width: 320px; /* Ограничение ширины для десктопов */
+    max-height: 480px; /* Ограничение высоты для десктопов */
+    margin: 0 auto; /* Центрирование */
+    background-color: #f0f0f0; /* Светлый фон */
+    overflow: hidden; /* Скрываем элементы за пределами */
+}
+
+/* Счётчик монет */
+#score {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 20px;
+    font-family: Arial, sans-serif;
+    color: black;
+    z-index: 10; /* Чтобы счёт был поверх всего */
 }
 
 /* Персонаж — зелёная мышь */
 #mouse {
     position: absolute;
-    width: 50px; /* Размер мыши */
+    width: 50px;
     height: 50px;
-    background: url('mouse.png'); /* Здесь будет твоя картинка мыши с бутылкой, сохрани её как mouse.png */
-    background-size: contain; /* Убеждаемся, что картинка помещается */
-    /* Если у тебя нет файла, замени на: background-color: #00ff00; (зелёный цвет) */
+    background: url('mouse.png'); /* Твоя картинка мыши */
+    background-size: contain;
 }
 
 /* Платформы */
 .platform {
     position: absolute;
-    width: 80px; /* Ширина платформы */
-    height: 20px; /* Высота платформы */
-    background-color: #8B4513; /* Коричневый цвет, как деревянная платформа */
-    border: 2px solid black; /* Жирные чёрные линии, как в стиле Paint */
+    width: 80px;
+    height: 20px;
+    background-color: #8B4513; /* Коричневый цвет платформ */
+    border: 2px solid black; /* Жирные линии в стиле Paint */
 }
 
 /* Монеты */
@@ -32,7 +44,16 @@
     position: absolute;
     width: 20px;
     height: 20px;
-    background-color: yellow; /* Золотистые монеты */
-    border-radius: 50%; /* Делаем круглыми, как монеты */
-    border: 2px solid black; /* Жирные линии для стиля Paint */
+    background-color: yellow;
+    border-radius: 50%;
+    border: 2px solid black;
+}
+
+/* Бутылки (новый элемент) */
+.bottle {
+    position: absolute;
+    width: 20px;
+    height: 40px;
+    background-color: #8B0000; /* Коричневый цвет бутылки */
+    border: 2px solid black;
 }
