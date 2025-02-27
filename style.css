@@ -1,0 +1,38 @@
+/* Основной контейнер игры */
+#game-container {
+    position: relative;
+    width: 320px; /* Ширина экрана игры */
+    height: 480px; /* Высота экрана игры */
+    background-color: #f0f0f0; /* Светлый фон, как в простом рисунке */
+    overflow: hidden; /* Скрываем элементы, выходящие за пределы */
+    margin: 0 auto; /* Центрируем игру на странице */
+}
+
+/* Персонаж — зелёная мышь */
+#mouse {
+    position: absolute;
+    width: 50px; /* Размер мыши */
+    height: 50px;
+    background: url('mouse.png'); /* Здесь будет твоя картинка мыши с бутылкой, сохрани её как mouse.png */
+    background-size: contain; /* Убеждаемся, что картинка помещается */
+    /* Если у тебя нет файла, замени на: background-color: #00ff00; (зелёный цвет) */
+}
+
+/* Платформы */
+.platform {
+    position: absolute;
+    width: 80px; /* Ширина платформы */
+    height: 20px; /* Высота платформы */
+    background-color: #8B4513; /* Коричневый цвет, как деревянная платформа */
+    border: 2px solid black; /* Жирные чёрные линии, как в стиле Paint */
+}
+
+/* Монеты */
+.coin {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background-color: yellow; /* Золотистые монеты */
+    border-radius: 50%; /* Делаем круглыми, как монеты */
+    border: 2px solid black; /* Жирные линии для стиля Paint */
+}
